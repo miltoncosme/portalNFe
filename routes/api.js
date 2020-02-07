@@ -119,8 +119,8 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     const qry = `select a.chave
     , a.serie
     , a.numero_nf as numero
-    , to_char(a.data_aut, 'DD/MM/YYYY') as autorizado
     , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
+    , to_char(a.data_aut, 'DD/MM/YYYY') as autorizado    
     , a.status
     from nfce a, empresa b
     where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
@@ -167,8 +167,8 @@ router.get('/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     const qry = `select a.chave
     , a.serie
     , a.numero_nf as numero
-    , to_char(a.data_aut, 'DD/MM/YYYY') as autorizado
     , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
+    , to_char(a.data_aut, 'DD/MM/YYYY') as autorizado    
     , a.status
     from nfe a, empresa b
     where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
