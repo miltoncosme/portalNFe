@@ -318,7 +318,7 @@ router.post('/nfce', verifyJWT, (req,res)=>{
             ,'${req.body.dtautorizacao}'
             ,'${req.body.hrautorizacao}'
             ,'${dateFormat(new Date(),'mm/dd/yyyy')}'
-            ,'${dateFormat(new Date(),'hh:mm:yyyy')}'
+            ,'${dateFormat(new Date(),'hh:mm')}'
             ,'${sFilename}'
             ,'${req.body.appname}'
             ,${req.body.status}	
@@ -406,7 +406,7 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,'${req.body.dtautorizacao}'
             ,'${req.body.hrautorizacao}'
             ,'${dateFormat(new Date(),'mm/dd/yyyy')}'
-            ,'${dateFormat(new Date(),'hh:mm:ss')}'
+            ,'${dateFormat(new Date(),'hh:mm')}'
             ,'${sFilename}'
             ,'${req.body.appname}'
             ,${req.body.status}	
