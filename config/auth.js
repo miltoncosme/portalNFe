@@ -9,7 +9,8 @@ module.exports = function(passport){
         const qry = `select id, login,nome from usuario where login='${nome}' and senha='${senha}'`
         pool.query(qry)
           .then(con=>{
-            const user = con.rows[0]         
+            const user = con.rows[0]
+            console.log('passport: ', nome,senha,done, user)         
             if (user){
                 done(null,user);
             } else {
