@@ -9,8 +9,7 @@ module.exports = function(passport){
         const qry = `select id, login,nome from usuario where login='${nome}' and senha='${senha}'`
         pool.query(qry)
           .then(con=>{
-            const user = con.rows[0]
-            console.log('passport: ', nome,senha,done, user)         
+            const user = con.rows[0]                 
             if (user){
                 done(null,user);
             } else {
@@ -29,7 +28,6 @@ module.exports = function(passport){
     });
   
     passport.deserializeUser((id,done)=>{
-        console.log('deserializeUser: ', id);
         const pool  = new Pool (conn()); 
         const qry = `select login as nome from usuario where id=${id}`
         pool.query(qry)

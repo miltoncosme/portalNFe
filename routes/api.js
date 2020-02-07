@@ -23,8 +23,8 @@ router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     const pool  = new Pool(conn()) 
     const qry = `select a.caminho
     from nfce a, empresa b
-    where a.data_aut between '${dateFormat(primeiroDia,'dd.mm.yyyy')}' 
-    and '${dateFormat(ultimoDia,'dd.mm.yyyy')}'
+    where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
+    and '${dateFormat(ultimoDia,'mm/dd/yyyy')}'
     and a.empresa=b.seq
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
@@ -75,8 +75,8 @@ router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
     , a.status
     from nfe a, empresa b
-    where a.data_aut between '${dateFormat(primeiroDia,'dd.mm.yyyy')}' 
-    and '${dateFormat(ultimoDia,'dd.mm.yyyy')}'
+    where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
+    and '${dateFormat(ultimoDia,'mm/dd/yyyy')}'
     and a.empresa=b.seq
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
@@ -123,8 +123,8 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
     , a.status
     from nfce a, empresa b
-    where a.data_aut between '${dateFormat(primeiroDia,'dd.mm.yyyy')}' 
-    and '${dateFormat(ultimoDia,'dd.mm.yyyy')}'
+    where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
+    and '${dateFormat(ultimoDia,'mm/dd/yyyy')}'
     and a.empresa=b.seq
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
@@ -171,8 +171,8 @@ router.get('/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
     , a.status
     from nfe a, empresa b
-    where a.data_aut between '${dateFormat(primeiroDia,'dd.mm.yyyy')}' 
-    and '${dateFormat(ultimoDia,'dd.mm.yyyy')}'
+    where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
+    and '${dateFormat(ultimoDia,'mm/dd/yyyy')}'
     and a.empresa=b.seq
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
@@ -317,8 +317,8 @@ router.post('/nfce', verifyJWT, (req,res)=>{
             ,${req.body.valor}
             ,'${req.body.dtautorizacao}'
             ,'${req.body.hrautorizacao}'
-            ,'${dateFormat(new Date(),'dd.mm.yyyy')}'
-            ,'${dateFormat(new Date(),'hh:mm:ss')}'
+            ,'${dateFormat(new Date(),'mm/dd/yyyy')}'
+            ,'${dateFormat(new Date(),'hh:mm:yyyy')}'
             ,'${sFilename}'
             ,'${req.body.appname}'
             ,${req.body.status}	
@@ -360,7 +360,7 @@ router.post('/nfe', verifyJWT, (req,res)=>{
     if (opsys == "win32" || opsys == "win64") {
         sFilename = `C:\\SRI_SERVICES\\Recebidos\\${req.body.cnpj}\\${ambiente}\\${dateFormat(new Date(),'yyyymmdd')}\\${serie}\\`
     } else if (opsys == "linux") {
-        sFilename = `/var/SRI_SERVICES/Recebidos/${req.body.cnpj}/${ambiente}/${dateFormat(new Date(),'yyyymmdd')}/${serie}`
+        sFilename = `/var/SRI_SERVICES/Recebidos/${req.body.cnpj}/${ambiente}/${dateFormat(new Date(),'yyyymmdd')}/${serie}/`
     } else {
         res.status(400).send({ result: false, dados:[], erro: 'OPsys não definido' })  
     }
@@ -405,7 +405,7 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,${req.body.valor}
             ,'${req.body.dtautorizacao}'
             ,'${req.body.hrautorizacao}'
-            ,'${dateFormat(new Date(),'dd.mm.yyyy')}'
+            ,'${dateFormat(new Date(),'mm/dd/yyyy')}'
             ,'${dateFormat(new Date(),'hh:mm:ss')}'
             ,'${sFilename}'
             ,'${req.body.appname}'
