@@ -13,13 +13,10 @@ const { verifyJWT } = require('../helpers/verifyJWT');
 router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     var st = `01.${req.params.mesano}`;
     var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-    var date = new Date(st.replace(pattern,'$3-$2-$1'));
-    
+    var date = new Date(st.replace(pattern,'$3-$2-$1'));    
     var primeiroDia = new Date(date.getFullYear(), date.getMonth() + 1, 1);
     var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 2, 0);  
-    //
-
-     
+    //     
     const pool  = new Pool(conn()) 
     const qry = `select a.caminho
     from nfce a, empresa b
@@ -47,7 +44,6 @@ router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
             archive.pipe(output);            
             // append files
             tmp.forEach(path=>{
-                //console.log(path.caminho, Path.basename(path.caminho))
                 archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
             })
             //
@@ -57,23 +53,18 @@ router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
         })
         .catch(err=>{
             res.status(500).send({ result: false, dados:[], erro: err.message })
-        })
-        
+        });        
 });
 
-router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{    
+router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{  
     var st = `01.${req.params.mesano}`;
     var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
     var date = new Date(st.replace(pattern,'$3-$2-$1'));    
     var primeiroDia = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 2, 0);    
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 2, 0);  
+    //     
     const pool  = new Pool(conn()) 
-    const qry = `select a.chave
-    , a.serie
-    , a.numero_nf as numero
-    , to_char(a.data_aut, 'DD/MM/YYYY') as autorizado
-    , to_char(a.data_rec, 'DD/MM/YYYY') as recebido
-    , a.status
+    const qry = `select a.caminho
     from nfe a, empresa b
     where a.data_aut between '${dateFormat(primeiroDia,'mm/dd/yyyy')}' 
     and '${dateFormat(ultimoDia,'mm/dd/yyyy')}'
@@ -83,29 +74,32 @@ router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     
     pool.query(qry)
         .then(con=>{
-            var tmp = con.rows;
-            const dados = tmp.map(e=>{
-                switch (e.status) {
-                    case 100:
-                        e.status= `${e.status} - Autorizado o uso da NF-e`
-                        break;
-                    case 101:
-                        e.status= `${e.status} - Cancelamento de NF-e homologado`
-                        break;
-                    case 102:
-                        e.status= `${e.status} - Inutilização de número homologado`
-                        break;                        
-                    default:
-                        break;
-                }               
-                return Object.values(e);
-            })
+            let tmp = con.rows;            
+            let rand = Math.random().toString(36).substring(7);
+            let filename = `${rand}.zip`
+            let output = fs.createWriteStream(`./public/download/${filename}`);
+            let archive = archiver('zip', {
+                gzip: true,
+                zlib: { level: 9 } // Sets the compression level.
+            });
             
-            res.status(200).send({ dados })
+            archive.on('error', function(err) {
+              throw err;
+            });            
+            // pipe archive data to the output file
+            archive.pipe(output);            
+            // append files
+            tmp.forEach(path=>{
+                archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
+            })
+            //
+            archive.finalize();            
+            
+            res.status(200).send({ result:true, dados:{uri:`/download/${filename}`,nome:`${req.params.mesano}.zip`} })
         })
         .catch(err=>{
-            res.status(500).send({ dados:[], erro: err.message })
-        })
+            res.status(500).send({ result: false, dados:[], erro: err.message })
+        });
 });
 
 router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
