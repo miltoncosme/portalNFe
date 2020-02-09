@@ -14,11 +14,22 @@ router.get('/', isAuth, (req, res)=>{
   const usuario = req.user;
   consultEmp(usuario);
   async function consultEmp(user){
+    /*
     let qry = `select a.cnpj, a.razao, (case when (b.id>=0) then true else false end) as ativo 
     from empresa a left join ativo b on a.seq=b.idempresa where a.seq in(
     select idempresa from grupousuario a, usuario b
     where a.idusuario=b.id
     and b.login='${user}') order by a.razao`
+    */
+   let qry = `select d.cnpj, d.razao, 
+              case when (select true from ativo a
+              where a.idusuario=f.id 
+              and a.idempresa=d.seq )is null
+              then false else true end as ativo
+              from empresa d, grupousuario e, usuario f
+              where d.seq=e.idempresa
+              and f.id=e.idusuario
+              and f.login='${user}' order by d.razao`
     const periodo = [];  
       
     const d1 = new Date()

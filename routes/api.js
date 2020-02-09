@@ -123,6 +123,8 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
     console.log('2.Data/hora: ', new Date());
+    console.log(qry);
+      
     pool.query(qry)
         .then(con=>{
             console.log('3.Data/hora: ', new Date());
@@ -147,6 +149,7 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
             res.status(200).send({ dados })
         })
         .catch(err=>{
+            console.log(err.message);
             res.status(500).send({ dados:[], erro: err.message })
         })
 });
@@ -201,12 +204,23 @@ router.get('/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
 router.get('/empresa/ativo', isAuth, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user;   
+    /*
     const qry = `select a.cnpj, a.razao, (case when (b.id>=0) then true else false end) as ativo 
     from empresa a left join ativo b on a.seq=b.idempresa where seq in(
         select idempresa from grupousuario a, usuario b
         where a.idusuario=b.id
         and b.login='${usuario}'
     ) order by a.razao`;   
+    */
+   const qry = `select d.cnpj, d.razao, 
+                case when (select true from ativo a
+                where a.idusuario=f.id 
+                and a.idempresa=d.seq )is null
+                then false else true end as ativo
+                from empresa d, grupousuario e, usuario f
+                where d.seq=e.idempresa
+                and f.id=e.idusuario
+                and f.login='${usuario}' order by d.razao`
     pool.query(qry)
         .then(con=>{
             const tmp = con.rows
@@ -415,10 +429,6 @@ router.post('/nfe', verifyJWT, (req,res)=>{
         res.status(500).send({ result: false, dados:[], erro: err.message })
       })
 });
-
-
-
-
 
 router.delete('/empresa/ativo', isAuth, (req,res)=>{
     const pool  = new Pool (conn());

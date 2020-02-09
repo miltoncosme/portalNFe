@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use(session({
-  secret:"921d2785e8e3ae3565d153f5689c9832",
+  secret:process.env.SECRET_WEB,
   resave: true,
   saveUninitialized: true
 }));
@@ -52,6 +52,12 @@ app.use('/server', apiRouter);
 app.use('/login', loginRouter);
 app.use('/token', tokenRouter);
 
+// Logout no passport
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/login');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -65,7 +71,10 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { 
+    titulo: 'mCloud' 
+  }  
+  );
 });
 
 module.exports = app;
