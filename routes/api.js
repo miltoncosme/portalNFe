@@ -259,11 +259,11 @@ router.post('/nfce', verifyJWT, (req,res)=>{
     const usuario = req.user.nome;
     var sFilename;
     let opsys = process.platform;
-    var ambient;
+    var ambiente;
     if (req.body.ambiente===1){
-        ambient='Producao'
+        ambienet='Producao'
     } else if (req.body.ambiente===2){
-        ambient='Homologacao'
+        ambiente='Homologacao'
     } else {
         res.status(400).send({ result: false, dados:[], erro: 'Ambiente não informado.' })
     };
@@ -349,11 +349,11 @@ router.post('/nfe', verifyJWT, (req,res)=>{
     const usuario = req.user.nome;
     var sFilename;    
     let opsys = process.platform;
-    var ambient;
+    var ambiente;
     if (req.body.ambiente===1){
-        ambient='Producao'
+        ambiente='Producao'
     } else if (req.body.ambiente===2){
-        ambient='Homologacao'
+        ambiente='Homologacao'
     } else {
         res.status(400).send({ result: false, dados:[], erro: 'Ambiente não informado.' })
     };
