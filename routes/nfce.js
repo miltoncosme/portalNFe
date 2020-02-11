@@ -31,7 +31,7 @@ router.get('/', isAuth, (req, res)=>{
               and f.id=e.idusuario
               and f.login='${user}' order by d.razao`
     const periodo = [];  
-      
+    const d0 = new Date() 
     const d1 = new Date()
     const d2 = new Date()
     const d3 = new Date()
@@ -46,6 +46,8 @@ router.get('/', isAuth, (req, res)=>{
         periodo.push({key:s.key,value:`${s.value}/${dateFormat(d2, "yyyy")}`})
       } else  if(s.key===dateFormat(d3, "mm")){
         periodo.push({key:s.key,value:`${s.value}/${dateFormat(d3, "yyyy")}`})
+      } else  if(s.key===dateFormat(d0, "mm")){
+        periodo.push({key:s.key,value:`${s.value}/${dateFormat(d0, "yyyy")}`})
       }
     })
    
