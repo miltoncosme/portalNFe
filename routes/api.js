@@ -458,6 +458,47 @@ router.post('/nfe', verifyJWT, (req,res)=>{
                 throw new Error(err);
             }
         });
+        const qryIns = `INSERT INTO nfe (empresa,
+            chave,
+            serie,
+            numero_nf,
+            valor,
+            data_aut,
+            hora_aut,
+            data_rec,
+            hora_rec,
+            caminho,
+            aplicativo,
+            status,
+            ambiente)
+            VALUES
+            (   (select seq from empresa where cnpj='${req.body.cnpj}')
+            ,'${req.body.chave}'
+            ,${req.body.serie}
+            ,${req.body.numero}
+            ,${req.body.valor}
+            ,'${req.body.dtautorizacao}'
+            ,'${req.body.hrautorizacao}'
+            ,'${dateFormat(new Date(),'mm/dd/yyyy')}'
+            ,'${dateFormat(new Date(),'HH:MM:ss')}'
+            ,'${sFilename}'
+            ,'${req.body.appname}'
+            ,${req.body.status}	
+            ,${req.body.ambiente}	) 
+            ON CONFLICT (empresa,serie,numero_nf,ambiente) DO
+            UPDATE SET 
+                status = ${req.body.status},
+                caminho = '${sFilename}',
+                aplicativo = '${req.body.appname}',
+                valor = ${req.body.valor},
+                data_aut = '${req.body.dtautorizacao}',
+                hora_aut = '${req.body.hrautorizacao}',
+                data_rec = '${dateFormat(new Date(),'mm/dd/yyyy')}',
+                hora_rec = '${dateFormat(new Date(),'HH:MM:ss')}'
+            where 
+                nfe.status not in(101,151)`;
+
+        /*
         const qryIns = `insert into nfe(
             empresa
             ,chave
@@ -486,7 +527,8 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,'${req.body.appname}'
             ,${req.body.status}	
             ,${req.body.ambiente}	
-        )`                    
+        )` 
+        */                   
         return pool.query(qryIns);
       })
       .then(()=>{
