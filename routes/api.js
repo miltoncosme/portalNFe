@@ -103,7 +103,6 @@ router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
 });
 
 router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
-    console.log('1.Data/hora: ', new Date());
     var st = `01.${req.params.mesano}`;
     var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
     var date = new Date(st.replace(pattern,'$3-$2-$1'));
@@ -122,12 +121,10 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
     and a.empresa=b.seq
     and b.cnpj='${req.params.cnpj}'
     order by a.serie, a.numero_nf`   
-    console.log('2.Data/hora: ', new Date());
-    console.log(qry);
+
       
     pool.query(qry)
         .then(con=>{
-            console.log('3.Data/hora: ', new Date());
             var tmp = con.rows;
             const dados = tmp.map(e=>{
                 switch (e.status) {
@@ -145,11 +142,9 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
                 }
                 return Object.values(e);
             })
-            console.log('4.Data/hora: ', new Date());
             res.status(200).send({ dados })
         })
         .catch(err=>{
-            console.log(err.message);
             res.status(500).send({ dados:[], erro: err.message })
         })
 });
@@ -205,14 +200,20 @@ router.get('/nfce/estatisticas/ultimas', isAuth, (req,res)=>{
   const pool  = new Pool (conn());
   const usuario = req.user;   
    
-  const qry = `select b.razao, a.caminho from
-                nfce a, empresa b, usuario c, grupousuario d
-                where a.empresa=b.seq
-                and a.empresa=d.idempresa
-                and d.idusuario=c.id
-                and c.login='${usuario}'
-                ORDER BY a.seq DESC LIMIT 10`
-    console.log(qry)            
+  const qry = `SELECT *
+                FROM (
+                        (select 'NFCe' as tipo, b.razao, a.caminho, a.data_rec, a.hora_rec from nfce a, empresa b, usuario c, grupousuario d
+                        where a.empresa=b.seq
+                        and a.empresa=d.idempresa
+                        and d.idusuario=c.id
+                        and c.login='${usuario}' order by a.data_rec desc, a.hora_rec desc limit 10)	
+                        union all
+                        (select 'NFe' as tipo, f.razao, e.caminho, e.data_rec, e.hora_rec from nfe e, empresa f, usuario g, grupousuario h
+                        where e.empresa=f.seq
+                        and e.empresa=h.idempresa
+                        and h.idusuario=g.id
+                        and g.login='${usuario}' order by e.data_rec desc, e.hora_rec desc limit 10)		
+                    ) res order by res.data_rec desc, res.hora_rec desc limit 10`
     pool.query(qry)
         .then(con=>{
             const tmp = con.rows
@@ -274,7 +275,6 @@ router.post('/empresa/ativo', isAuth, (req,res)=>{
           res.status(200).send({ result: true });
       })      
       .catch(err=>{
-        console.log('erro:', err.message)
         res.status(500).send({ dados:[], erro: err.message })
       })
 });
@@ -358,7 +358,6 @@ router.post('/nfce', verifyJWT, (req,res)=>{
             ,${req.body.status}	
             ,${req.body.ambiente}	
         )`                    
-        console.log(qryIns);
         return pool.query(qryIns);
       })
       .then(()=>{
@@ -448,7 +447,6 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,${req.body.status}	
             ,${req.body.ambiente}	
         )`                    
-        console.log(qryIns);
         return pool.query(qryIns);
       })
       .then(()=>{
