@@ -258,12 +258,9 @@ router.post('/nfce', verifyJWT, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user.nome;
     var sFilename;
-    var ambiente = 'Homologacao';
     let opsys = process.platform;
-    if (req.body.ambiente===1){
-        ambiente='Producao';
-    } else if (req.body.ambiente===2){
-        ambiente='Homologacao';
+    if (req.body.ambiente===1 || req.body.ambiente===2){
+        //
     } else {
         res.status(400).send({ result: false, dados:[], erro: 'Ambiente não informado.' })
     };
@@ -317,6 +314,7 @@ router.post('/nfce', verifyJWT, (req,res)=>{
             ,caminho
             ,aplicativo
             ,status
+            ,ambiente
             ) values (
              (select seq from empresa where cnpj='${req.body.cnpj}')
             ,'${req.body.chave}'
@@ -330,6 +328,7 @@ router.post('/nfce', verifyJWT, (req,res)=>{
             ,'${sFilename}'
             ,'${req.body.appname}'
             ,${req.body.status}	
+            ,${req.body.ambiente}	
         )`                    
         console.log(qryIns);
         return pool.query(qryIns);
@@ -345,13 +344,10 @@ router.post('/nfce', verifyJWT, (req,res)=>{
 router.post('/nfe', verifyJWT, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user.nome;
-    var sFilename;
-    var ambiente = 'Homologacao';
+    var sFilename;    
     let opsys = process.platform;
-    if (req.body.ambiente===1){
-        ambiente='Producao';
-    } else if (req.body.ambiente===2){
-        ambiente='Homologacao';
+    if (req.body.ambiente===1 || req.body.ambiente===2){
+        //
     } else {
         res.status(400).send({ result: false, dados:[], erro: 'Ambiente não informado.' })
     };
@@ -405,6 +401,7 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,caminho
             ,aplicativo
             ,status
+            ,ambiente
             ) values (
              (select seq from empresa where cnpj='${req.body.cnpj}')
             ,'${req.body.chave}'
@@ -418,6 +415,7 @@ router.post('/nfe', verifyJWT, (req,res)=>{
             ,'${sFilename}'
             ,'${req.body.appname}'
             ,${req.body.status}	
+            ,${req.body.ambiente}	
         )`                    
         console.log(qryIns);
         return pool.query(qryIns);
