@@ -201,6 +201,31 @@ router.get('/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
         })
 });
 
+router.get('/nfce/estatisticas/ultimas', isAuth, (req,res)=>{
+  const pool  = new Pool (conn());
+  const usuario = req.user;   
+   
+  const qry = `select b.razao, a.caminho from
+                nfce a, empresa b, usuario c, grupousuario d
+                where a.empresa=b.seq
+                and a.empresa=d.idempresa
+                and d.idusuario=c.id
+                and c.login='${usuario}'
+                ORDER BY a.seq DESC LIMIT 10`
+    console.log(qry)            
+    pool.query(qry)
+        .then(con=>{
+            const tmp = con.rows
+            const dados = tmp.map(e=>{
+                return Object.values(e);
+            })
+            res.status(200).send({ dados })
+        })
+        .catch(err=>{
+            res.status(500).send({ dados:[], erro: err.message })
+        })
+});
+
 router.get('/empresa/ativo', isAuth, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user;   
