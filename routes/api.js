@@ -261,7 +261,7 @@ router.post('/nfce', verifyJWT, (req,res)=>{
     let opsys = process.platform;
     var ambiente;
     if (req.body.ambiente===1){
-        ambienet='Producao'
+        ambiente='Producao'
     } else if (req.body.ambiente===2){
         ambiente='Homologacao'
     } else {
