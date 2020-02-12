@@ -196,6 +196,63 @@ router.get('/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
         })
 });
 
+router.get('/nfce/estatisticas/uso', isAuth, (req,res)=>{
+    const pool  = new Pool (conn());
+    const usuario = req.user;
+    const qry = `SELECT res.razao, sum(res.count) as qtd
+                 FROM (
+                        (select  b.razao, count(a.*)  from nfce a, empresa b, usuario c, grupousuario d
+                        where a.empresa=b.seq
+                        and a.empresa=d.idempresa
+                        and d.idusuario=c.id
+                        and c.login='${usuario}' group by b.razao)	
+                        union all
+                        (select  f.razao, count(e.*) from nfe e, empresa f, usuario g, grupousuario h
+                        where e.empresa=f.seq
+                        and e.empresa=h.idempresa
+                        and h.idusuario=g.id
+                        and g.login='${usuario}' group by f.razao)		
+                    ) res group by res.razao order by qtd desc`;
+    pool.query(qry)
+        .then(con=>{
+            const tmp = con.rows
+            const dados = [];
+            function cor(i){
+                switch(i){
+                    case 0:
+                        return '#DA5430';
+                        break;
+                    case 1:
+                        return '#2091CF';
+                        break;
+                    case 2:
+                        return '#AF4E96';
+                        break;
+                    case 3:
+                        return '#68BC31';
+                        break;
+                    default:
+                        return getRandomColor();
+                }
+            }
+            async function monta(){
+                await tmp.map((e,i)=>{
+                    dados.push(
+                        {
+                            label:e.razao,
+                            data:Number(e.qtd), 
+                            color: cor(i)  
+                        });
+                });    
+            }
+            monta();
+            res.status(200).send({ dados })
+        })
+        .catch(err=>{
+            res.status(500).send({ dados:[], erro: err.message })
+        })                    
+});
+
 router.get('/nfce/estatisticas/ultimas', isAuth, (req,res)=>{
   const pool  = new Pool (conn());
   const usuario = req.user;   
@@ -554,5 +611,14 @@ router.delete('/empresa/ativo', isAuth, (req,res)=>{
       })
 
 });
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 
 module.exports = router;
