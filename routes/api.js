@@ -281,7 +281,7 @@ router.get('/nfce/estatisticas/emitidas', isAuth, (req,res)=>{
             //const dados = con.rows
             const tmp = con.rows
             const dados = tmp.map(e=>{
-                return Object.assign(e,{total:(e.autorizadas+e.canceladas+e.inutilizadas)});
+                return Object.assign(e,{total:(Number(e.autorizadas)+Number(e.canceladas)+Number(e.inutilizadas))});
             })
             res.status(200).send({ dados })
         })
