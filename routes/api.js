@@ -278,7 +278,11 @@ router.get('/nfce/estatisticas/emitidas', isAuth, (req,res)=>{
     from empresa limit 1`;
     pool.query(qry)
         .then(con=>{
-            const dados = con.rows
+            //const dados = con.rows
+            const tmp = con.rows
+            const dados = tmp.map(e=>{
+                return Object.assign(e,{total:(e.autorizadas+e.canceladas+e.inutilizadas)});
+            })
             res.status(200).send({ dados })
         })
         .catch(err=>{
