@@ -201,67 +201,76 @@
 								</div>
 
 								<div class="row">									
-									<div class="col-sm-3 infobox-container">
-										<div class="space-2"></div>
-										<div class="infobox infobox-green">
-											<div class="infobox-icon">
-												<i class="ace-icon fa fa-check-square-o"></i>
+									<div class="col-sm-4 infobox-container">
+										<div class="widget-box">
+											<div class="widget-header widget-header-flat widget-header-small">
+												<h5 class="widget-title">													
+													Este Mês
+												</h5>												
 											</div>
-											<div class="infobox-data">
-												<span id="nf-aut" class="infobox-data-number">0</span>
-												<div class="infobox-content">Notas Autorizadas</div>
-											</div>
-										</div>
-										<div class="infobox infobox-pink">
-											<div class="infobox-icon">
-												<i class="ace-icon fa fa-ban"></i>
-											</div>
-											<div class="infobox-data">
-												<span id="nf-can" class="infobox-data-number">0</span>
-												<div class="infobox-content">Notas Canceladas</div>
-											</div>
-										</div>
-										<div class="infobox infobox-orange2">
-											<div class="infobox-icon">
-												<i class="ace-icon fa fa-asterisk"></i>
-											</div>
-											<div class="infobox-data">
-												<span id="nf-inu" class="infobox-data-number">0</span>
-												<div class="infobox-content">Notas Inutilizadas</div>
-											</div>																						
-										</div>
-										<div class="infobox infobox-orange">
-											<div class="infobox-icon">
-												<i class="ace-icon fa fa-shopping-cart"></i>
-											</div>
-											<div class="infobox-data">
-												<span id="nf-tot" class="infobox-data-number">0</span>
-												<div class="infobox-content">Total Emitidas</div>
-											</div>											
+											<div class="widget-body">
+												<div class="space-2"></div>
+												<div class="infobox infobox-green">
+													<div class="infobox-icon">
+														<i class="ace-icon fa fa-check-square-o"></i>
+													</div>
+													<div class="infobox-data">
+														<span id="nf-aut" class="infobox-data-number">0</span>
+														<div class="infobox-content">Notas Autorizadas</div>
+													</div>
+												</div>
+												<div class="space-2"></div>												
+												<div class="infobox infobox-pink">
+													<div class="infobox-icon">
+														<i class="ace-icon fa fa-ban"></i>
+													</div>
+													<div class="infobox-data">
+														<span id="nf-can" class="infobox-data-number">0</span>
+														<div class="infobox-content">Notas Canceladas</div>
+													</div>
+												</div>
+												<div class="space-2"></div>												
+												<div class="infobox infobox-orange2">
+													<div class="infobox-icon">
+														<i class="ace-icon fa fa-asterisk"></i>
+													</div>
+													<div class="infobox-data">
+														<span id="nf-inu" class="infobox-data-number">0</span>
+														<div class="infobox-content">Notas Inutilizadas</div>
+													</div>																						
+												</div>
+												<div class="space-2"></div>												
+												<div class="infobox infobox-orange">
+													<div class="infobox-icon">
+														<i class="ace-icon fa fa-shopping-cart"></i>
+													</div>
+													<div class="infobox-data">
+														<span id="nf-tot" class="infobox-data-number">0</span>
+														<div class="infobox-content">Total Emitidas</div>
+													</div>											
+												</div>
+												<div class="space-2"></div>												
+											</div>>		
 										</div>
 									</div>									
-									<div class="col-sm-7">
+									<div class="col-sm-8">
 										<div class="widget-box">
 											<div class="widget-header widget-header-flat widget-header-small">
 												<h5 class="widget-title">
-													<i class="ace-icon fa fa-signal"></i>
 													Consumo de dados por empresa
 												</h5>												
 											</div>
-
 											<div class="widget-body">
+												<div class="space-12"></div>
 												<div class="widget-main">
 													<div id="piechart-placeholder"></div>
-												</div><!-- /.widget-main -->
-											</div><!-- /.widget-body -->
-										</div><!-- /.widget-box -->
+												</div>
+												<div class="space-12"></div>
+											</div>
+										</div>
 									</div>
 								</div>
-
-								
-
 								<div class="hr hr32 hr-dotted"></div>
-
 								<div class="row">
 									<div class="col-sm-12">
 										<div class="widget-box transparent">
@@ -300,19 +309,12 @@
 														<tbody id="bodytable">	
 														</tbody>
 													</table>
-												</div><!-- /.widget-main -->
-											</div><!-- /.widget-body -->
-										</div><!-- /.widget-box -->
-									</div><!-- /.col -->
-
-									
-								</div><!-- /.row -->
-
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="hr hr32 hr-dotted"></div>
-
-								
-
-								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->
@@ -404,7 +406,7 @@
 				//but sometimes it brings up errors with normal resize event handlers
 				$.resize.throttleWindow = false;
 			
-			  	var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
+			  	var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'200px'});
 			  	var data = [{}];
 			  	function drawPieChart(placeholder, data, position) {
 			 	  $.plot(placeholder, data, {
@@ -580,7 +582,6 @@
 			})
 
 			window.onload = function(){
-				
 				function graficoPizza(){
 					$.ajax({url: '/server/nfce/estatisticas/uso',
 							type: "get"
@@ -610,13 +611,29 @@
 						})
 					})					
 					.fail(function (jqXHR, textStatus, errorThrown) {
-						// needs to implement if it fails
 						console.log(jqXHR.responseText);
 					});
-				}
-				
-				graficoPizza();
-				setInterval(function() {
+				};
+				function carregaWidgets(){
+					$.ajax({url: '/server/nfce/estatisticas/emitidas',
+							type: "get"
+					})				
+					.done(function(res) {
+						const data = res.dados[0];
+						let nfaut = document.getElementById('nf-aut');
+						let nfcan = document.getElementById('nf-can');
+						let nfinu = document.getElementById('nf-inu');
+						let nftot = document.getElementById('nf-tot');
+						nfaut.innerText = data.autorizadas;
+						nfcan.innerText = data.canceladas;
+						nfinu.innerText = data.inutilizadas;
+						nftot.innerText = data.total;
+					})					
+					.fail(function(jqXHR, textStatus, errorThrown) {
+						console.log(jqXHR.responseText);
+					});
+				};
+				function carregaGrid(){
 					$.ajax({url: '/server/nfce/estatisticas/ultimas',
 							type: "get"
 					})				
@@ -642,28 +659,22 @@
 					.fail(function (jqXHR, textStatus, errorThrown) {
 						console.log(jqXHR.responseText);
 					});
-				}, 2000);
+				};
+				graficoPizza();
+				carregaWidgets();
+				carregaGrid();
+
 				setInterval(function() {
-					$.ajax({url: '/server/nfce/estatisticas/emitidas',
-							type: "get"
-					})				
-					.done(function(res) {
-						
-						const data = res.dados[0];
-						console.log('data: ', data)
-						let nfaut = document.getElementById('nf-aut');
-						let nfcan = document.getElementById('nf-can');
-						let nfinu = document.getElementById('nf-inu');
-						let nftot = document.getElementById('nf-tot');
-						nfaut.innerText = data.autorizadas;
-						nfcan.innerText = data.canceladas;
-						nfinu.innerText = data.inutilizadas;
-						nftot.innerText = data.total;
-					})					
-					.fail(function(jqXHR, textStatus, errorThrown) {
-						console.log(jqXHR.responseText);
-					});
+					carregaGrid();	
 				}, 2000);
+
+				setInterval(function() {
+					carregaWidgets();
+				}, 3000);
+
+				setInterval(function() {
+					graficoPizza();
+				}, 30000);
 			}	
 		</script>
 	</body>
