@@ -200,80 +200,82 @@ router.get('/nfce/estatisticas/emitidas', isAuth, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user;
     const qry = `select 
-                    sum(uniAut.count) as Autorizadas,
-                    sum(uniCan.count) as Canceladas,
-                    sum(uniInu.count) as Inutilizadas, 
-                    sum(uniAut.count)+sum(uniCan.count)+sum(uniInu.count) as Total 
-                from 
+    (select sum(aut.count) 
+        from (
+            (
+                select count(a.*)  from nfce a
+                where status in (100, 150)
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
                 (
-                    (
-                        select count(a.*) from nfce a
-                        where status in (100, 150)
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )
-                    )		
-                    union all
-                    (
-                        select count(a.*) from nfe a
-                        where a.status in (100, 150)
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )
-                    )
-                ) uniAut,
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )
+            )		
+            union all
+            (
+                select count(a.*) from nfe a
+                where a.status in (100, 150)
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
                 (
-                    (
-                        select count(*) from nfce a
-                        where a.status in (101, 151)
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )
-                    )
-                    union all
-                    (
-                        select count(*) from nfe a
-                        where a.status in (101, 151)
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )		
-                    )
-                ) uniCan,
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )
+            )
+        ) aut
+    ) as autorizadas ,
+    (select sum(can.count)
+        from (
+            (
+                select count(*) from nfce a
+                where a.status in (101, 151)
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
                 (
-                    (
-                        select count(*) from nfce a
-                        where a.status=102
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )
-                    )
-                    union all
-                    (
-                        select count(*) from nfe a
-                        where a.status=102
-                        and a.data_aut >= date_trunc('month', current_date)
-                        and a.empresa in 
-                        (
-                            select b.seq from empresa b, usuario c, grupousuario d 
-                            where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
-                        )
-                    )
-                ) uniInu`;
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )
+            )
+            union all
+            (
+                select count(*) from nfe a
+                where a.status in (101, 151)
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
+                (
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )		
+            )
+         ) can
+    ) as canceladas,
+    (select sum(inu.count)
+        from (
+            (
+                select count(*) from nfce a
+                where a.status=102
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
+                (
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )
+            )
+            union all
+            (
+                select count(*) from nfe a
+                where a.status=102
+                and a.data_aut >= date_trunc('month', current_date)
+                and a.empresa in 
+                (
+                    select b.seq from empresa b, usuario c, grupousuario d 
+                    where b.seq=d.idempresa and d.idusuario=c.id and c.login='${usuario}'
+                )
+            )
+        ) inu
+    ) as inutilizadas
+    from empresa limit 1`;
     pool.query(qry)
         .then(con=>{
             const dados = con.rows
