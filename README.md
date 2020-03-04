@@ -1,6 +1,6 @@
 # portalNFe
 
-Aplicativo simples para guardar e baixar copias de XMLs referente a NFe e NFCe emitidas
+Aplicativo simples para guardar e baixar copias de XMLs referente a NFe e NFCe.
 
 ## Pré-requisitos
 
