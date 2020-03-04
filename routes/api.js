@@ -43,10 +43,13 @@ router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
             // pipe archive data to the output file
             archive.pipe(output);            
             // append files
-            tmp.forEach(path=>{
-                archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
-            })
+            async function insertfiles() {
+                await tmp.forEach(path=>{
+                    archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
+                })
+            };
             //
+            insertfiles();
             archive.finalize();            
             
             res.status(200).send({ result:true, dados:{uri:`/download/${filename}`,nome:`${req.params.mesano}.zip`} })
@@ -89,10 +92,12 @@ router.get('/download/nfe/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
             // pipe archive data to the output file
             archive.pipe(output);            
             // append files
-            tmp.forEach(path=>{
-                archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
-            })
-            //
+            async function insertfiles() {
+                await tmp.forEach(path=>{
+                            archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
+                        })
+            };
+            insertfiles();
             archive.finalize();            
             
             res.status(200).send({ result:true, dados:{uri:`/download/${filename}`,nome:`${req.params.mesano}.zip`} })

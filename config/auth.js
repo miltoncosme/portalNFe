@@ -7,16 +7,19 @@ module.exports = function(passport){
     passport.use(new localStrategy({usernameField:'nome', passwordField:'senha'},(nome,senha,done)=>{        
         const pool  = new Pool (conn()); 
         const qry = `select id, login,nome from usuario where login='${nome}' and senha='${senha}'`
+        console.log(qry)
         pool.query(qry)
           .then(con=>{
-            const user = con.rows[0]                 
+            const user = con.rows[0]
+            console.log(user)                 
             if (user){
                 done(null,user);
             } else {
                 done(null,null);
             }
           })
-          .catch(()=>{
+          .catch((err)=>{
+            console.log(err.message)
             done(null,null); 
           })
             

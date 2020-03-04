@@ -318,7 +318,7 @@
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->
-				</div>
+				</div>			
 			</div><!-- /.main-content -->
 
 			<div class="footer">
@@ -614,6 +614,7 @@
 						console.log(jqXHR.responseText);
 					});
 				};
+
 				function carregaWidgets(){
 					$.ajax({url: '/server/nfce/estatisticas/emitidas',
 							type: "get"
@@ -633,6 +634,8 @@
 						console.log(jqXHR.responseText);
 					});
 				};
+
+
 				function carregaGrid(){
 					$.ajax({url: '/server/nfce/estatisticas/ultimas',
 							type: "get"
@@ -676,7 +679,7 @@
 					graficoPizza();
 				}, 30000);
 			}	
-		</script>
+		</script>		
 	</body>
 </html
 
