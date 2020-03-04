@@ -47,12 +47,11 @@ router.get('/download/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
                 await tmp.forEach(path=>{
                     archive.append(fs.createReadStream(path.caminho), { name: `${Path.basename(path.caminho)}` })
                 })
+                await archive.finalize();
+                res.status(200).send({ result:true, dados:{uri:`/download/${filename}`,nome:`${req.params.mesano}.zip`} })    
             };
             //
             insertfiles();
-            archive.finalize();            
-            
-            res.status(200).send({ result:true, dados:{uri:`/download/${filename}`,nome:`${req.params.mesano}.zip`} })
         })
         .catch(err=>{
             res.status(500).send({ result: false, dados:[], erro: err.message })
