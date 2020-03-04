@@ -19,12 +19,13 @@ Além disso, certifique-se de ter o `git` disponível no seu PATH. Para mais inf
       $ sudo apt install npm
 
 
-Se a instalação foi bem-sucedida, você poderá executar o seguinte comando
- $ node --version
-    v12.16.1
+Se a instalação foi bem-sucedida, você poderá executar o seguinte comando.
+      
+      $ node --version
+          v12.16.1
 
- $ npm --version
-    6.13.4
+      $ npm --version
+           6.13.4
 	
 ## Instalando
 
