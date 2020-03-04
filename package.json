@@ -17,6 +17,7 @@
     "express": "~4.16.1",
     "express-session": "^1.17.0",
     "fs": "0.0.1-security",
+    "fs-readdir-rec-gen": "^1.1.5",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.3",
