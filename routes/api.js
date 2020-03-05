@@ -296,8 +296,8 @@ router.get('/nfce/estatisticas/emitidas', isAuth, (req,res)=>{
 router.get('/nfce/estatisticas/uso', isAuth, (req,res)=>{
     const pool  = new Pool (conn());
     const usuario = req.user;
-    const qry = `SELECT res.razao, sum(res.count) as qtd
-                 FROM (
+    const qry = `select p.razao, p.qtd from ((select res.razao, sum(res.count) as qtd
+                    from (
                         (select  b.razao, count(a.*)  from nfce a, empresa b, usuario c, grupousuario d
                         where a.empresa=b.seq
                         and a.empresa=d.idempresa
@@ -309,7 +309,21 @@ router.get('/nfce/estatisticas/uso', isAuth, (req,res)=>{
                         and e.empresa=h.idempresa
                         and h.idusuario=g.id
                         and g.login='${usuario}' group by f.razao)		
-                    ) res group by res.razao order by qtd desc`;
+                    ) res  group by res.razao order by qtd desc limit 3) union all
+                (select 'OUTROS' as razao, sum(out.qtd) from (select res.razao, sum(res.count) as qtd
+                    FROM (
+                        (select  b.razao, count(a.*)  from nfce a, empresa b, usuario c, grupousuario d
+                        where a.empresa=b.seq
+                        and a.empresa=d.idempresa
+                        and d.idusuario=c.id
+                        and c.login='${usuario}' group by b.razao)	
+                        union all
+                        (select  f.razao, count(e.*) from nfe e, empresa f, usuario g, grupousuario h
+                        where e.empresa=f.seq
+                        and e.empresa=h.idempresa
+                        and h.idusuario=g.id
+                        and g.login='${usuario}' group by f.razao)		
+                    ) res  group by res.razao order by qtd desc offset 3) out)) p order by p.qtd desc`;
     pool.query(qry)
         .then(con=>{
             const tmp = con.rows
