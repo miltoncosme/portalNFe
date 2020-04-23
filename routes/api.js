@@ -139,7 +139,16 @@ router.get('/nfce/cnpj/:cnpj/mesano/:mesano', isAuth, (req, res)=>{
                         break;
                     case 102:
                         e.status= `${e.status} - Inutilização de número homologado`
-                        break;                        
+                        break;
+                    case 150:
+                        e.status= `${e.status} - Autorizado o uso da NF-e, autorização concedida fora de prazo`
+                        break;
+                    case 151:
+                        e.status= `${e.status} - Cancelamento de NF-e homologado fora de prazo`
+                        break;    
+                    case 301:
+                        e.status= `${e.status} - Uso Denegado: Irregularidade fiscal do emitente`
+                        break;                                               
                     default:
                         break;
                 }
