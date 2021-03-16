@@ -19,10 +19,11 @@
     "fs": "0.0.1-security",
     "fs-readdir-rec-gen": "^1.1.5",
     "http-errors": "~1.6.3",
+    "ini": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.4",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.7",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pg": "^8.5.1"
